@@ -36,6 +36,12 @@ medical-data-analyser/
 ├── .gitignore                    # Git ignore rules
 ├── Dockerfile                    # Docker containerization
 └── README.md                     # This file
+```
+
+## Requirements
+
+- **Python**: 3.8 or higher
+- **OS**: Linux, macOS, or Windows
 
 ## Installation
 
@@ -54,6 +60,34 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 3. Install dependencies:
 ```bash
 pip install -r requirements.txt
+```
+
+## Quick Start
+
+Get up and running in minutes:
+
+```python
+# Data Processing
+from src.data_processing import DataProcessor
+
+processor = DataProcessor()
+df = processor.load_and_clean('data/raw/patients.csv')
+
+# Disease Prediction
+from src.models import DiseasePredictor
+
+predictor = DiseasePredictor(model_type='ensemble')
+predictions = predictor.predict(df)
+
+# Analysis and Visualization
+from src.analysis import HealthAnalysis
+from src.visualization import HealthVisualizer
+
+analysis = HealthAnalysis()
+visualizer = HealthVisualizer()
+
+results = analysis.analyze(df)
+visualizer.plot_metrics(results)
 ```
 
 ## Usage
@@ -80,7 +114,20 @@ from src.analysis import HealthAnalysis
 from src.visualization import HealthVisualizer
 
 analysis = HealthAnalysis()
+results = analysis.analyze(patient_data)
+
 visualizer = HealthVisualizer()
+visualizer.plot_metrics(results)
+```
+
+### API Endpoints
+```bash
+# Start the API server
+python -m src.api.main
+
+# Example requests
+curl http://localhost:8000/predict -X POST -d '{"patient_data": {...}}'
+curl http://localhost:8000/analysis -X GET
 ```
 
 ## Technologies
@@ -92,6 +139,30 @@ visualizer = HealthVisualizer()
 - **API**: Flask or FastAPI
 - **Testing**: Pytest
 - **Containerization**: Docker
+
+## Troubleshooting
+
+### Common Issues
+
+**Dependency conflicts during installation:**
+- Clear pip cache: `pip cache purge`
+- Use a fresh virtual environment
+- Install specific versions: `pip install -r requirements.txt --force-reinstall`
+
+**Module import errors:**
+- Ensure you're in the project root directory
+- Verify virtual environment is activated
+- Run: `pip install -e .`
+
+**API server won't start:**
+- Check if port 8000 is available
+- Verify all dependencies are installed: `pip install -r requirements.txt`
+- Check logs in `logs/` directory
+
+For additional issues, please open a GitHub issue with:
+- Python version (`python --version`)
+- Full error message and traceback
+- Steps to reproduce
 
 ## Contributing
 
