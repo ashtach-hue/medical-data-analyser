@@ -1,1 +1,1 @@
-"""Test module"""
+"""Test suite for Medical Data Analyser."""

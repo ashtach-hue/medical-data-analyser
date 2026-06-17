@@ -1,5 +1,5 @@
-"""Visualization module"""
+"""Data visualization module."""
 
-from src.visualization.health_visualizer import HealthVisualizer
+from src.visualization.visualizer import HealthVisualizer
 
-__all__ = ['HealthVisualizer']
+__all__ = ["HealthVisualizer"]

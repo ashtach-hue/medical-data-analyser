@@ -1,0 +1,21 @@
+{
+  "api": {
+    "host": "0.0.0.0",
+    "port": 8000,
+    "debug": false
+  },
+  "data": {
+    "raw_path": "./data/raw",
+    "processed_path": "./data/processed",
+    "external_path": "./data/external"
+  },
+  "model": {
+    "type": "ensemble",
+    "confidence_threshold": 0.7,
+    "random_state": 42
+  },
+  "logging": {
+    "level": "INFO",
+    "path": "./logs"
+  }
+}

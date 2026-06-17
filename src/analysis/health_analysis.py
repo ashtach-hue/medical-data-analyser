@@ -1,69 +1,66 @@
-"""Health data statistical analysis"""
+"""Health metrics analysis."""
 
 import pandas as pd
 import numpy as np
-from scipy import stats
-from typing import Dict, List, Tuple, Any
+from typing import Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)
 
 
 class HealthAnalysis:
-    """Statistical analysis for health data"""
-    
-    @staticmethod
-    def correlation_analysis(df: pd.DataFrame, numeric_cols: List[str] = None) -> pd.DataFrame:
-        """Compute correlation matrix
+    """Perform statistical analysis on health data."""
+
+    def __init__(self):
+        """Initialize HealthAnalysis."""
+        self.results = None
+
+    def analyze(self, df: pd.DataFrame) -> Dict[str, Any]:
+        """Analyze health metrics in the dataset.
         
         Args:
             df: Input DataFrame
-            numeric_cols: Columns to include
+            
+        Returns:
+            Dictionary with analysis results
+        """
+        results = {
+            'summary_stats': df.describe().to_dict(),
+            'null_counts': df.isnull().sum().to_dict(),
+            'shape': df.shape,
+            'columns': df.columns.tolist()
+        }
+        
+        self.results = results
+        logger.info("Analysis completed")
+        return results
+
+    def get_correlations(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Calculate correlation matrix.
+        
+        Args:
+            df: Input DataFrame
             
         Returns:
             Correlation matrix
         """
-        if numeric_cols is None:
-            numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
-        
-        return df[numeric_cols].corr()
-    
-    @staticmethod
-    def statistical_summary(df: pd.DataFrame) -> Dict[str, Any]:
-        """Generate statistical summary
+        numeric_df = df.select_dtypes(include=[np.number])
+        return numeric_df.corr()
+
+    def identify_outliers(self, df: pd.DataFrame, column: str, threshold: float = 3.0) -> pd.DataFrame:
+        """Identify outliers using z-score.
         
         Args:
             df: Input DataFrame
+            column: Column to analyze
+            threshold: Z-score threshold
             
         Returns:
-            Dictionary with statistical summaries
+            DataFrame with outliers marked
         """
-        return {
-            'describe': df.describe().to_dict(),
-            'skewness': df.skew().to_dict(),
-            'kurtosis': df.kurtosis().to_dict()
-        }
-    
-    @staticmethod
-    def compare_groups(df: pd.DataFrame, group_col: str, value_col: str) -> Dict[str, Any]:
-        """Compare values across groups using t-test
+        from scipy import stats
         
-        Args:
-            df: Input DataFrame
-            group_col: Column with group labels
-            value_col: Column with values to compare
-            
-        Returns:
-            Dictionary with comparison results
-        """
-        groups = df[group_col].unique()
-        values = [df[df[group_col] == g][value_col].dropna().values for g in groups]
+        z_scores = np.abs(stats.zscore(df[column].dropna()))
+        outliers = df[np.abs(stats.zscore(df[column].dropna())) > threshold]
         
-        t_stat, p_value = stats.ttest_ind(*values)
-        
-        return {
-            'groups': groups.tolist(),
-            't_statistic': t_stat,
-            'p_value': p_value,
-            'significant': p_value < 0.05
-        }
+        return outliers

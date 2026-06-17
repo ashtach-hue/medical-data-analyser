@@ -1,7 +1,5 @@
-"""Machine learning models module"""
+"""Machine learning models for disease prediction."""
 
-from src.models.disease_predictor import DiseasePredictor
-from src.models.model_trainer import ModelTrainer
-from src.models.model_evaluator import ModelEvaluator
+from src.models.predictor import DiseasePredictor
 
-__all__ = ['DiseasePredictor', 'ModelTrainer', 'ModelEvaluator']
+__all__ = ["DiseasePredictor"]

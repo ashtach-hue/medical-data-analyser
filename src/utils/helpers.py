@@ -1,43 +1,53 @@
-"""Helper utility functions"""
+"""Helper functions and utilities."""
 
+import os
+import json
 import logging
-import sys
-from pathlib import Path
-from typing import Optional
+from typing import Dict, Any
 
 
-def configure_logging(log_level: int = logging.INFO,
-                     log_file: Optional[Path] = None) -> logging.Logger:
-    """Configure logging for the application
+def load_config(config_path: str = "config/config.json") -> Dict[str, Any]:
+    """Load configuration from JSON file.
+    
+    Args:
+        config_path: Path to config file
+        
+    Returns:
+        Configuration dictionary
+    """
+    try:
+        with open(config_path, 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"Config file not found: {config_path}")
+        return {}
+
+
+def setup_logging(log_level: str = "INFO", log_file: str = None) -> logging.Logger:
+    """Setup logging configuration.
     
     Args:
         log_level: Logging level
-        log_file: Optional file path for log output
+        log_file: Optional log file path
         
     Returns:
         Configured logger
     """
-    logger = logging.getLogger('medical_data_analyser')
+    logger = logging.getLogger()
     logger.setLevel(log_level)
     
-    # Console handler
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(log_level)
-    
-    # Formatter
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
-    console_handler.setFormatter(formatter)
     
+    # Console handler
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
     
-    # File handler if specified
+    # File handler
     if log_file:
-        log_file.parent.mkdir(parents=True, exist_ok=True)
         file_handler = logging.FileHandler(log_file)
-        file_handler.setLevel(log_level)
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
     
